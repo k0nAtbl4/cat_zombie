@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use crate::components::player::Player;
 
-const PLAYER_SPEED: f32 = 50.0;
+const PLAYER_SPEED: f32 = 500.0;
 
 pub fn player_movement(
     keyboard_input: Res<ButtonInput<KeyCode>>,
