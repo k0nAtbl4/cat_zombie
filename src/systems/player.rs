@@ -1,5 +1,9 @@
 use bevy::prelude::*;
-use crate::components::player::Player;
+use crate::{components::player::Player, resources};
+
+
+use resources::sound::MySound;
+
 
 const PLAYER_SPEED: f32 = 500.0;
 
@@ -29,5 +33,14 @@ pub fn player_movement(
         }
 
         transform.translation += direction * PLAYER_SPEED * time.delta_secs();
+    }
+}
+
+
+pub fn play_sound_on_space(input: Res<ButtonInput<KeyCode>>, audio: Res<MySound>, mut commands: Commands) {
+    if input.just_pressed(KeyCode::Space) {
+        commands.spawn(AudioPlayer::new(
+            audio.sound.clone(),
+        ));
     }
 }

@@ -5,10 +5,10 @@ use crate::components::player::{Player, Velocity};
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>,) {
     commands.spawn(Camera2d);
     commands.spawn((
-        Sprite::from_image(asset_server.load("Sprite-0003.png")),
+        Sprite::from_image(asset_server.load("cat/blink/Sprite-0003.png")),
         Transform{
             translation: Vec3::new(0.0, 0.0, 0.0),
-            scale: Vec3::new(5.,5.,1.),
+            scale: Vec3::new(3.,3.,1.),
             ..Default::default()
         },
         Player,
