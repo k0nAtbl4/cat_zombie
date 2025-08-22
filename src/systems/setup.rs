@@ -27,7 +27,7 @@ pub fn setup(
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(100), 5, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     // Use only the subset of sprites in the sheet that make up the run animation
-    let animation_indices = AnimationIndices { first: 1, last: 5 };
+    let animation_indices = AnimationIndices { first: 0, last: 4 };
 
     commands.spawn(Camera2d);
 

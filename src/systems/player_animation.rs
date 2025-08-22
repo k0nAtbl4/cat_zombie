@@ -8,26 +8,23 @@ pub fn animate_sprite(
     mut query: Query<(&AnimationIndices, &mut AnimationTimer, &mut Sprite)>,
 ) {
     for (indices, mut timer, mut sprite) in &mut query {
-        print!("\nLOG: {:?} \n", &timer);
         if timer.is_in_pause {
             timer.pause_timer.tick(time.delta());
             if timer.pause_timer.just_finished() {
                 timer.is_in_pause = false;
                 timer.frame_timer.reset();
             }
-            
         } else {
-            
-            if let Some(atlas) = &mut sprite.texture_atlas {
-                atlas.index = if atlas.index == indices.last {
-                    indices.first
-            } else {
-                atlas.index + 1
-            };
             timer.frame_timer.tick(time.delta());
-        }
-
-
+            if timer.frame_timer.just_finished() {
+                if let Some(atlas) = &mut sprite.texture_atlas {
+                    atlas.index = if atlas.index == indices.last {
+                        indices.first
+                    } else {
+                        atlas.index + 1
+                    };
+                }
+            }
         }
     }
 }
