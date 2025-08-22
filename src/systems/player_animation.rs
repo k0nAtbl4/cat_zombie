@@ -22,7 +22,12 @@ pub fn animate_sprite(
                         indices.first
                     } else {
                         atlas.index + 1
+
                     };
+                        if atlas.index == indices.last {
+                            timer.is_in_pause = true;
+                            timer.pause_timer.reset();
+                        }
                 }
             }
         }
