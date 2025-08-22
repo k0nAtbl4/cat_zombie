@@ -6,5 +6,9 @@ pub struct AnimationIndices {
     pub last: usize,
 }
 
-#[derive(Component, Deref, DerefMut)]
-pub struct AnimationTimer(Timer);
+#[derive(Component, Debug)]
+pub struct AnimationTimer{
+    pub frame_timer: Timer,
+    pub pause_timer: Timer,
+    pub is_in_pause: bool,
+}
