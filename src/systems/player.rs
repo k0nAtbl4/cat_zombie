@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{components::player::{Direction, Player}, resources};
+use crate::{components::player::{AnimationState, Direction, Player}, resources};
 
 
 use resources::sound::MySound;
@@ -12,31 +12,42 @@ const PLAYER_SPEED: f32 = 500.0;
 
 pub fn player_movement(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<(&mut Transform, &mut Direction, &mut Sprite), With<Player>>,
+    mut query: Query<(&mut Transform, &mut Direction, &mut AnimationState, &mut Sprite), With<Player>>,
     time: Res<Time>,
 ) {
-    if let Ok((mut transform, mut looking_direction, mut sprite)) = query.single_mut() {
+    if let Ok((mut transform, mut looking_direction, mut animation_state, mut sprite)) = query.single_mut() {
         let mut direction = Vec3::ZERO;
 
+        let mut is_moving = false;
+        
         if keyboard_input.pressed(KeyCode::KeyW) {
             direction.y += 1.0;
+            is_moving = true;
         }
         if keyboard_input.pressed(KeyCode::KeyS) {
             direction.y -= 1.0;
+            is_moving = true;
         }
         if keyboard_input.pressed(KeyCode::KeyA) {
             direction.x -= 1.0;
+            is_moving = true;
             *looking_direction = Direction::Left;
         }   
         if keyboard_input.pressed(KeyCode::KeyD) {
             direction.x += 1.0;
+            is_moving = true;
             *looking_direction = Direction::Right;
         }
 
         if direction.length() > 0.0 {
             direction = direction.normalize();
         }
-
+        // Обновляем состояние анимации
+        *animation_state = if is_moving {
+            AnimationState::Walking
+        } else {
+            AnimationState::Idle
+        };
 
         if *looking_direction == Direction::Left {
             sprite.flip_x = true;

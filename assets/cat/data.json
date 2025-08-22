@@ -1,0 +1,11 @@
+{
+    "Idle": {
+    "first": 0,
+    "last": 4
+},
+"Walking": {
+    "first": 5,
+    "last": 15
+}
+
+}

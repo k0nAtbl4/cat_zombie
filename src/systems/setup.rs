@@ -1,6 +1,6 @@
 use bevy::{prelude::*, render::render_resource::encase::private::SizeValue};
 
-use crate::components::{player::{AnimationIndices, AnimationTimer}, player::{Player, Velocity,Direction}};
+use crate::components::player::{AnimationIndices, AnimationState, AnimationTimer, Direction, Player, StartEnd, Velocity};
 
 
 // pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>,) {
@@ -23,11 +23,11 @@ pub fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    let texture = asset_server.load("cat/animation-0001.png");
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(100), 5, 1, None, None);
+    let texture = asset_server.load("cat/animation_player.png");
+    let layout = TextureAtlasLayout::from_grid(UVec2::splat(100), 13, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     // Use only the subset of sprites in the sheet that make up the run animation
-    let animation_indices = AnimationIndices { first: 0, last: 4 };
+    let animation_indices = AnimationIndices { idle: StartEnd { first: 0, last: 4 }, walking: StartEnd { first: 5, last: 12 }};
 
     commands.spawn(Camera2d);
 
@@ -36,18 +36,19 @@ pub fn setup(
             texture,
             TextureAtlas {
                 layout: texture_atlas_layout,
-                index: animation_indices.first,
+                index: animation_indices.idle.first,
             },
         ),  
         Transform::from_scale(Vec3::splat(5.0)),
         animation_indices,
         AnimationTimer{
-            frame_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
+            frame_timer: Timer::from_seconds(0.085, TimerMode::Repeating),
             pause_timer: Timer::from_seconds(1.6, TimerMode::Repeating),
             is_in_pause: true,
         },
         Player,
         Velocity { x: 0.0, y: 0.0 },
         Direction::Right,
+        AnimationState::Idle,
     ));
 }
