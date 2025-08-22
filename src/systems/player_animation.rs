@@ -1,7 +1,9 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 
-use crate::components::animation_cat::{AnimationIndices, AnimationTimer};
-
+use crate::components::player::{AnimationIndices, AnimationTimer};
+use rand::Rng;
 
 pub fn animate_sprite(
     time: Res<Time>,
@@ -14,7 +16,7 @@ pub fn animate_sprite(
                 timer.is_in_pause = false;
                 timer.frame_timer.reset();
             }
-        } else {
+        } else {    
             timer.frame_timer.tick(time.delta());
             if timer.frame_timer.just_finished() {
                 if let Some(atlas) = &mut sprite.texture_atlas {
@@ -26,10 +28,11 @@ pub fn animate_sprite(
                     };
                         if atlas.index == indices.last {
                             timer.is_in_pause = true;
-                            timer.pause_timer.reset();
+                            // let z =rand::thread_rng().gen_range(0.4..6.0);
+                            timer.pause_timer.set_duration(Duration::from_secs_f64( rand::thread_rng().gen_range(0.4..6.0) ));
                         }
                 }
-            }
+             }
         }
     }
 }

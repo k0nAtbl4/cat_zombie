@@ -1,6 +1,6 @@
 use bevy::{prelude::*, render::render_resource::encase::private::SizeValue};
 
-use crate::components::{animation_cat::{AnimationIndices, AnimationTimer}, player::{Player, Velocity}};
+use crate::components::{player::{AnimationIndices, AnimationTimer}, player::{Player, Velocity,Direction}};
 
 
 // pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>,) {
@@ -48,5 +48,6 @@ pub fn setup(
         },
         Player,
         Velocity { x: 0.0, y: 0.0 },
+        Direction::Right,
     ));
 }
