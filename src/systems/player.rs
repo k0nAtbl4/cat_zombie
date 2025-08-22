@@ -12,10 +12,10 @@ const PLAYER_SPEED: f32 = 500.0;
 
 pub fn player_movement(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<(&mut Transform, &mut Direction), With<Player>>,
+    mut query: Query<(&mut Transform, &mut Direction, &mut Sprite), With<Player>>,
     time: Res<Time>,
 ) {
-    if let Ok((mut transform, mut looking_direction)) = query.single_mut() {
+    if let Ok((mut transform, mut looking_direction, mut sprite)) = query.single_mut() {
         let mut direction = Vec3::ZERO;
 
         if keyboard_input.pressed(KeyCode::KeyW) {
@@ -37,11 +37,17 @@ pub fn player_movement(
             direction = direction.normalize();
         }
 
+
         if *looking_direction == Direction::Left {
-            transform.scale.x = if transform.scale.x > 0.0 { transform.scale.x*-1.0 } else { transform.scale.x }; // Отражаем по горизонтали
+            sprite.flip_x = true;
         } else {
-            transform.scale.x = if transform.scale.x > 0.0 { transform.scale.x } else { transform.scale.x *-1.0};  // Нормальное отображение
+            sprite.flip_x = false;
         }
+        // if *looking_direction == Direction::Left {
+        //     transform.scale.x = if transform.scale.x > 0.0 { transform.scale.x*-1.0 } else { transform.scale.x }; // Отражаем по горизонтали
+        // } else {
+        //     transform.scale.x = if transform.scale.x > 0.0 { transform.scale.x } else { transform.scale.x *-1.0};  // Нормальное отображение
+        // }
 
         transform.translation += direction * PLAYER_SPEED * time.delta_secs();
     }
