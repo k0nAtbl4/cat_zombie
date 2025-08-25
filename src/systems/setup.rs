@@ -24,7 +24,7 @@ pub fn setup(
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let texture = asset_server.load("cat/animation_player.png");
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(100), 14, 1, None, None);
+    let layout = TextureAtlasLayout::from_grid(UVec2::splat(100), 13, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     // Use only the subset of sprites in the sheet that make up the run animation
     let animation_indices = AnimationIndices { idle: StartEnd { first: 0, last: 4 }, walking: StartEnd { first: 5, last: 12 }};
