@@ -6,11 +6,11 @@ use bevy::prelude::*;
 pub struct Player;
 
 
-#[derive(Component)]
-pub struct Velocity {
-    pub x: f32,
-    pub y: f32,
-}
+// #[derive(Component)]
+// pub struct Velocity {
+//     pub x: f32,
+//     pub y: f32,
+// }
 
 pub struct StartEnd {
     pub first: usize,
@@ -32,7 +32,7 @@ pub struct AnimationTimer{
     pub is_in_pause: bool,
 }
 
-#[derive(Component, Default, PartialEq)]
+#[derive(Component, Default, PartialEq, Debug)]
 pub enum AnimationState {
     #[default]
     Idle,
