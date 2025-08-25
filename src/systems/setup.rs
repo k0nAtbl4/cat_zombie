@@ -42,7 +42,7 @@ pub fn setup(
         Transform::from_scale(Vec3::splat(2.1)),
         animation_indices,
         AnimationTimer{
-            frame_timer: Timer::from_seconds(0.085, TimerMode::Repeating),
+            frame_timer: Timer::from_seconds(0.065, TimerMode::Repeating),
             pause_timer: Timer::from_seconds(1.6, TimerMode::Repeating),
             is_in_pause: true,
         },

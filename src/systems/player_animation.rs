@@ -15,64 +15,69 @@ pub fn animate_sprite(
     )>,
 ) {
     for (indices, mut timer, state, mut sprite) in &mut query {
-        if state == &AnimationState::Idle {
-            if let Some(atlas) = &mut sprite.texture_atlas {
-                if atlas.index > indices.idle.last || atlas.index < indices.idle.first {
-                    timer.frame_timer.reset();
-                    atlas.index = indices.idle.first;
-                }
-            }
+        match state {
+            &AnimationState::Idle => {
+                if let Some(atlas) = &mut sprite.texture_atlas {
+                    if atlas.index > indices.idle.last || atlas.index < indices.idle.first {
 
-            if timer.is_in_pause {
-                timer.pause_timer.tick(time.delta());
-                if timer.pause_timer.just_finished() {
-                    timer.is_in_pause = false;
-                    timer.frame_timer.reset();
+                        atlas.index = indices.idle.first;
+                    }
                 }
-            } else {
+                if timer.is_in_pause {
+                    timer.pause_timer.tick(time.delta());
+                    if timer.pause_timer.just_finished() {
+                        timer.is_in_pause = false;
+                        timer.frame_timer.reset();
+                    }
+                } else {
+                    timer.frame_timer.tick(time.delta());
+                    if timer.frame_timer.just_finished() {
+                        if let Some(atlas) = &mut sprite.texture_atlas {
+                            atlas.index = if atlas.index >= indices.idle.last {
+                                indices.idle.first
+                            } else {
+                                atlas.index + 1
+                            };
+                            if indices.idle.first < atlas.index && atlas.index >= indices.idle.last
+                            {
+                                timer.is_in_pause = true;
+                                timer.pause_timer.set_duration(Duration::from_secs_f64(
+                                    rand::thread_rng().gen_range(0.4..6.0),
+                                ));
+                            }
+                        }
+                    }
+                }   
+            }
+            &AnimationState::Walking => {
+                if let Some(atlas) = &mut sprite.texture_atlas {
+                    if atlas.index < indices.walking.first || atlas.index > indices.walking.last {
+                        atlas.index = indices.walking.first;
+                    }
+                }
                 timer.frame_timer.tick(time.delta());
                 if timer.frame_timer.just_finished() {
                     if let Some(atlas) = &mut sprite.texture_atlas {
-                        atlas.index = if atlas.index >= indices.idle.first {
-                            indices.idle.last
+                        let (first, last) = match state {
+                            AnimationState::Idle => (indices.idle.first, indices.idle.last),
+                            AnimationState::Walking => {
+                                (indices.walking.first, indices.walking.last)
+                            }
+                        };
+
+                        // Обновляем кадр анимации
+                        atlas.index = if atlas.index >= last {
+                            first
                         } else {
                             atlas.index + 1
                         };
-                        if indices.idle.first <= atlas.index && atlas.index <= indices.idle.last {
-                            timer.is_in_pause = true;
-                            // let z =rand::thread_rng().gen_range(0.4..6.0);
-                            timer.pause_timer.set_duration(Duration::from_secs_f64(
-                                rand::thread_rng().gen_range(0.4..6.0),
-                            ));
-                        }
                     }
                 }
             }
         }
-        if state == &AnimationState::Walking {
-            if let Some(atlas) = &mut sprite.texture_atlas {
-                if atlas.index < indices.walking.first || atlas.index > indices.walking.last {
-                    timer.frame_timer.reset();
-                    atlas.index = indices.walking.first;
-                }
-            }
-            timer.frame_timer.tick(time.delta());
-            if timer.frame_timer.just_finished() {
-                if let Some(atlas) = &mut sprite.texture_atlas {
-                    let (first, last) = match state {
-                        AnimationState::Idle => (indices.idle.first, indices.idle.last),
-                        AnimationState::Walking => (indices.walking.first, indices.walking.last),
-                    };
-
-                    // Обновляем кадр анимации
-                    atlas.index = if atlas.index >= last {
-                        first
-                    } else {
-                        atlas.index + 1
-                    };
-                }
-            }
-        }
         print!("\n LOG: {:?} \n", &state);
+        if let Some(atlas) = &mut sprite.texture_atlas {
+            print!("\n LOG: {:?} | {:?} \n", atlas.index, timer.pause_timer.elapsed());
+        }
     }
 }
